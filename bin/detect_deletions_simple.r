@@ -59,8 +59,9 @@ write.csv(mat, file='mat.csv')
 df<-getExonsDF(mat)
 write.csv(df, file='df.csv')
 
+libSD<-getLibSD(mat)
+write.csv(libSD, file='libSD.csv')
+
 dels<-getAllDeletedExons(mat,df)
 write.csv(dels, file="dels.csv")
 
-libSD<-getLibSD(mat)
-write.csv(libSD, file='libSD.csv')
