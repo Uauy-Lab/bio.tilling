@@ -1,4 +1,4 @@
-#' Coutns how many missing values are in the the list. 
+#' Counts how many missing values are in the the list. 
 #'
 #' @param x: The list of values. It is transformed to a numneric vector. 
 #'
@@ -35,7 +35,7 @@ getLibSD<-function(mat) {
 	libSD
 }
 
-#' Filters all the exons that have low quality. 
+#' Filters all the exons that have low quality (high SD). 
 filterLowQualityExons <-function(mat, maxSD=0.3){
 	exonSD<-apply(mat, 1, sd)
  	fineSD<-exonSD < maxSD
@@ -43,6 +43,10 @@ filterLowQualityExons <-function(mat, maxSD=0.3){
     mat<-mat[complete.cases(mat), ]
     mat
 }
+
+#filterRegionsWithoutCoverage <- function(mat, min_lines=0.0, min_cov=0){
+#	mat <- 
+#}
 
 
 #' Reads the table with the coverages. The table has headers containing the libary name. 
@@ -90,7 +94,7 @@ getExonsDetails<-function(names){
 
 
 #' Function that normalizes the coverages, in an RPKM-like values, and normalized to have a mean of 1, at the exon level.
-normalizeCovs<-function(counts, exonsDF) {
+normalizeCovs<-function(counts, exonsDF, min_cov=0, min_lines=0.01) {
 	exonLengths<-exonsDF$ExonL
 	totalReadsPerSample<-apply(counts,2,sum)
 	multiplier<-outer(exonLengths, totalReadsPerSample )

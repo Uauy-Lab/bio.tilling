@@ -12,11 +12,11 @@ option_list = list(
   make_option(c("-s", "--sampleSD"), 
   	type="double", 
   	default=0.3, 
-  	help="Maximum Standard Deviation allowed in sample [default= %default]"),
+  	help="Maximum Standard Deviation allowed in sample [default= %default]. If the valaue is 0, no filter is applied."),
   make_option(c("-w", "--windowSD"), 
   	type="double", 
   	default=0.3,
-  	help="Maximum Standard Deviation allowed in each window [default= %default]"),
+  	help="Maximum Standard Deviation allowed in each window [default= %default]. If the valaue is 0, no filter is applied."),
   make_option(c("-z", "--gzip"), 
   	action="store_true", 
   	default=FALSE,
@@ -43,7 +43,10 @@ output_folder<-opt$out
 is_gz <- opt$gzip
 
 covs<-readCoverageTable(filename, is_gz=is_gz)
-covs<-filterSamplesPerSD(covs, maxSD=opt$sampleSD)
+
+if(opt$sampleSD > 0){
+  covs<-filterSamplesPerSD(covs, maxSD=opt$sampleSD)
+}
 
 df<-getExonsDF(covs)
 mat<-normalizeCovs(covs, df)
@@ -52,7 +55,10 @@ rm(covs)
 dir.create(output_folder, recursive = TRUE)
 setwd(output_folder)
 
-mat<-filterLowQualityExons(mat, maxSD=opt$windowSD)
+if(opt$windowSD){
+  mat<-filterLowQualityExons(mat, maxSD=opt$windowSD)
+}
+
 gc()
 write.csv(mat, file='mat.csv')
 
